@@ -45,9 +45,11 @@ defineExpose({ openDialog });
 <template>
   <v-dialog v-model="dialog" max-width="400px">
     <v-card>
-      <v-card-title class="text-white bg-blue-darken-1 py-4">
-        <v-icon :icon="task.id ? 'mdi-pencil' : 'mdi-plus'" class="me-2"></v-icon>
-        {{ task.id ? 'Edit Task' : 'Add Task' }}
+      <v-card-title class="text-white bg-primary py-4">
+        <v-icon icon="mdi-pencil" v-if="task.id" class="me-2"></v-icon>
+        <v-icon icon="mdi-plus-circle" v-else class="me-2"></v-icon>
+        <template v-if="task.id">Edit Task</template>
+        <template v-else>Add Task</template>
       </v-card-title>
 
       <v-card-text class="pt-4">
@@ -90,8 +92,8 @@ defineExpose({ openDialog });
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <div class="mb-4">Priority</div>
-              <v-radio-group v-model="task.priority" class="priority-group" hide-details="auto">
+              <div class="mb-2">Priority</div>
+              <v-radio-group v-model="task.priority" inline class="ml-0">
                 <v-radio label="Low" value="Low"></v-radio>
                 <v-radio label="Med" value="Medium"></v-radio>
                 <v-radio label="High" value="High"></v-radio>
@@ -106,7 +108,7 @@ defineExpose({ openDialog });
         <v-btn
           variant="elevated"
           color="primary"
-          :prepend-icon="task.id ? 'mdi-pencil' : 'mdi-plus'"
+          :prepend-icon="task.id ? 'mdi-pencil' : 'mdi-plus-circle'"
           @click="handleSubmit"
           :disabled="!task.title || !task.description || !task.deadline"
           class="me-2"
@@ -115,8 +117,8 @@ defineExpose({ openDialog });
         </v-btn>
         <v-btn
           variant="elevated"
-          color="error"
-          prepend-icon="mdi-close"
+          color="red"
+          prepend-icon="mdi-cancel"
           @click="dialog = false"
         >
           CANCEL
@@ -125,35 +127,3 @@ defineExpose({ openDialog });
     </v-card>
   </v-dialog>
 </template>
-
-<style scoped>
-.v-card-title {
-  font-size: 1.25rem;
-}
-
-:deep(.v-field--error) {
-  --v-field-border-width: 1px !important;
-}
-
-:deep(.priority-group) {
-  display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 0 1rem;
-}
-
-:deep(.v-radio) {
-  margin-left: 0;
-  margin-right: 0;
-}
-
-:deep(.v-radio .v-label) {
-  font-size: 1.1rem;
-  margin-left: 0.5rem;
-}
-
-:deep(.v-btn) {
-  text-transform: uppercase;
-  letter-spacing: 0.0892857143em;
-}
-</style>

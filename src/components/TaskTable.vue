@@ -4,11 +4,19 @@ import TaskDialog from './TaskDialog.vue';
 import { useDisplay } from 'vuetify';
 
 const dialog = ref(null);
-const snackbar = ref(false);
-const snackbarText = ref('');
 const { mobile } = useDisplay();
 
+const emit = defineEmits(['show-message']);
 defineExpose({ showDialog });
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  });
+}
 
 const tasks = ref([
   {
@@ -40,16 +48,14 @@ function addTask(newTask) {
     isComplete: false,
   };
   tasks.value.push(task);
-  snackbarText.value = 'Task added successfully!';
-  snackbar.value = true;
+  emit('show-message', 'Task added successfully!');
 }
 
 function updateTask(updatedTask) {
   const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
   if (index !== -1) {
     tasks.value[index] = updatedTask;
-    snackbarText.value = 'Task updated successfully!';
-    snackbar.value = true;
+    emit('show-message', 'Task updated successfully!');
   }
 }
 
@@ -57,8 +63,7 @@ function deleteTask(taskId) {
   const index = tasks.value.findIndex((t) => t.id === taskId);
   if (index !== -1) {
     tasks.value.splice(index, 1);
-    snackbarText.value = 'Task deleted successfully!';
-    snackbar.value = true;
+    emit('show-message', 'Task deleted successfully!');
   }
 }
 </script>
@@ -84,7 +89,7 @@ function deleteTask(taskId) {
         <tr v-for="task in tasks" :key="task.id">
           <td>{{ task.title }}</td>
           <td>{{ task.description }}</td>
-          <td>{{ task.deadline }}</td>
+          <td>{{ formatDate(task.deadline) }}</td>
           <td>{{ task.priority }}</td>
           <td>
             <v-checkbox v-model="task.isComplete" hide-details></v-checkbox>
@@ -101,7 +106,7 @@ function deleteTask(taskId) {
                 Update
               </v-btn>
               <v-btn
-                color="error"
+                color="red"
                 size="small"
                 @click="deleteTask(task.id)"
                 prepend-icon="mdi-close-circle"
@@ -116,21 +121,5 @@ function deleteTask(taskId) {
     </v-table>
 
     <TaskDialog ref="dialog" @add-task="addTask" @update-task="updateTask" />
-
-    <v-snackbar v-model="snackbar" :timeout="3000" color="success">
-      {{ snackbarText }}
-    </v-snackbar>
   </div>
 </template>
-
-<style scoped>
-.v-table {
-  background: white;
-}
-
-.delete-btn :deep(.v-btn__prepend) {
-  background: white;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-</style>

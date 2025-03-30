@@ -1,13 +1,21 @@
 <script setup>
 import TaskTable from './components/TaskTable.vue';
-import TaskDialog from './components/TaskDialog.vue';
 import { ref } from 'vue';
 
-const taskDialogRef = ref(null);
+const taskTableRef = ref(null);
+const snackbar = ref(false);
+const snackbarText = ref('');
 
 function openDialog() {
-  taskDialogRef.value?.openDialog();
+  taskTableRef.value?.showDialog();
 }
+
+function showMessage(message) {
+  snackbarText.value = message;
+  snackbar.value = true;
+}
+
+defineExpose({ showMessage });
 </script>
 
 <template>
@@ -26,19 +34,17 @@ function openDialog() {
 
     <v-main>
       <v-container>
-        <TaskTable />
-        <TaskDialog ref="taskDialogRef" />
+        <TaskTable ref="taskTableRef" @show-message="showMessage" />
       </v-container>
     </v-main>
+
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="3000"
+      color="success"
+      location="bottom right"
+    >
+      {{ snackbarText }}
+    </v-snackbar>
   </v-app>
 </template>
-
-<style>
-.v-application {
-  background: white !important;
-}
-
-.text-center {
-  text-align: center;
-}
-</style>
