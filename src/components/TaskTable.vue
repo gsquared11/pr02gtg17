@@ -7,6 +7,7 @@ import 'toastr/build/toastr.min.css';
 
 const dialog = ref(null);
 const { mobile } = useDisplay();
+const tasks = ref([]);
 
 defineExpose({ showDialog });
 
@@ -18,8 +19,6 @@ function formatDate(dateString) {
     year: '2-digit'
   });
 }
-
-const tasks = ref([]);
 
 function isTitleDuplicate(title, excludeTaskId = null) {
   return tasks.value.some(task => 
