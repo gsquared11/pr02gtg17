@@ -100,7 +100,7 @@ function deleteTask(taskId) {
                 color="primary"
                 size="small"
                 @click="showDialog(task)"
-                prepend-icon="mdi-pencil"
+                prepend-icon="mdi-square-edit-outline"
               >
                 Update
               </v-btn>

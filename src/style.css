@@ -1,3 +1,4 @@
+/* Makes the default date picker icon transparent */
 input[type="date"]::-webkit-calendar-picker-indicator {
     width: auto;
 }

@@ -92,8 +92,8 @@ defineExpose({ openDialog });
   <v-dialog v-model="dialog" max-width="400px">
     <v-card>
       <v-card-title class="text-white bg-primary py-4">
-        <v-icon icon="mdi-pencil" v-if="task.id" class="me-2"></v-icon>
-        <v-icon icon="mdi-plus" v-else class="me-2"></v-icon>
+        <v-icon icon="mdi-square-edit-outline" v-if="task.id" class="me-2"></v-icon>
+        <v-icon icon="mdi-plus-circle" v-else class="me-2"></v-icon>
         <template v-if="task.id">Edit Task</template>
         <template v-else>Add Task</template>
       </v-card-title>
@@ -158,7 +158,7 @@ defineExpose({ openDialog });
         <v-btn
           variant="elevated"
           color="primary"
-          :prepend-icon="task.id ? 'mdi-pencil' : 'mdi-plus'"
+          :prepend-icon="task.id ? 'mdi-square-edit-outline' : 'mdi-plus-circle'"
           @click="handleSubmit"
           :disabled="!task.title || !task.description || !task.deadline || (!task.id && checkTitleDuplicate && checkTitleDuplicate(task.title))"
           class="me-2"
