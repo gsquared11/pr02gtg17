@@ -15,6 +15,7 @@ const task = ref({
 const titleError = ref('');
 const descriptionError = ref('');
 const deadlineError = ref('');
+const attemptedSubmit = ref(false);
 let checkTitleDuplicate = null;
 
 function validateTitle() {
@@ -64,11 +65,20 @@ function openDialog(existingTask = null, titleDuplicateCheck = null) {
   titleError.value = '';
   descriptionError.value = '';
   deadlineError.value = '';
+  attemptedSubmit.value = false;
   dialog.value = true;
 }
 
 function handleSubmit() {
-  if (!validateTitle() || !validateDescription() || !validateDeadline()) {
+  attemptedSubmit.value = true;
+  
+  const titleValid = validateTitle();
+  const descriptionValid = validateDescription();
+  const deadlineValid = validateDeadline();
+  
+  const isValid = titleValid && descriptionValid && deadlineValid;
+  
+  if (!isValid) {
     return;
   }
   
@@ -103,9 +113,7 @@ defineExpose({ openDialog });
                 label="Title"
                 variant="outlined"
                 :error-messages="titleError"
-                @input="validateTitle"
-                @blur="validateTitle"
-                hide-details="auto"
+                :error="attemptedSubmit && (!task.title || (checkTitleDuplicate && checkTitleDuplicate(task.title, task.id)))"
                 class="mb-4"
               ></v-text-field>
             </v-col>
@@ -115,9 +123,7 @@ defineExpose({ openDialog });
                 label="Description"
                 variant="outlined"
                 :error-messages="descriptionError"
-                @input="validateDescription"
-                @blur="validateDescription"
-                hide-details="auto"
+                :error="attemptedSubmit && !task.description"
                 class="mb-4"
               ></v-text-field>
             </v-col>
@@ -129,15 +135,13 @@ defineExpose({ openDialog });
                 type="date"
                 variant="outlined"
                 :error-messages="deadlineError"
-                @input="validateDeadline"
-                @blur="validateDeadline"
-                hide-details="auto"
+                :error="attemptedSubmit && !task.deadline"
                 class="mb-4 date-input"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
               <div class="mb-2">Priority</div>
-              <v-radio-group v-model="task.priority" class="priority-group" hide-details="auto" inline>
+              <v-radio-group v-model="task.priority" class="priority-group" inline>
                 <v-radio label="Low" value="Low"></v-radio>
                 <v-radio label="Med" value="Med"></v-radio>
                 <v-radio label="High" value="High"></v-radio>
@@ -154,7 +158,6 @@ defineExpose({ openDialog });
           color="primary"
           :prepend-icon="task.id ? 'mdi-square-edit-outline' : 'mdi-plus-circle'"
           @click="handleSubmit"
-          :disabled="!task.title || !task.description || !task.deadline || (!task.id && checkTitleDuplicate && checkTitleDuplicate(task.title))"
           class="me-2"
         >
           {{ task.id ? 'EDIT' : 'ADD' }}
