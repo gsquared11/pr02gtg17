@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 const emit = defineEmits(['add-task', 'update-task']);
 const dialog = ref(false);
+const deadlineRef = ref(null);
 const task = ref({
   title: '',
   description: '',
@@ -16,9 +17,9 @@ const descriptionError = ref('');
 const deadlineError = ref('');
 let checkTitleDuplicate = null;
 
-const rules = {
-  required: (value) => !!value || 'Field is required',
-};
+function showDatePicker() {
+  deadlineRef.value.$el.querySelector('input[type="date"]').showPicker();
+}
 
 function validateTitle() {
   if (!task.value.title) {
@@ -105,7 +106,6 @@ defineExpose({ openDialog });
                 v-model="task.title"
                 label="Title"
                 variant="outlined"
-                :rules="[rules.required]"
                 :error-messages="titleError"
                 @input="validateTitle"
                 @blur="validateTitle"
@@ -118,7 +118,6 @@ defineExpose({ openDialog });
                 v-model="task.description"
                 label="Description"
                 variant="outlined"
-                :rules="[rules.required]"
                 :error-messages="descriptionError"
                 @input="validateDescription"
                 @blur="validateDescription"
@@ -128,17 +127,19 @@ defineExpose({ openDialog });
             </v-col>
             <v-col cols="12">
               <v-text-field
+                ref="deadlineRef"
                 v-model="task.deadline"
                 label="Deadline"
                 type="date"
                 variant="outlined"
-                :rules="[rules.required]"
                 :error-messages="deadlineError"
                 @input="validateDeadline"
                 @blur="validateDeadline"
                 hide-details="auto"
-                class="mb-4"
-                prepend-inner-icon="mdi-calendar"
+                class="mb-4 date-input"
+                append-inner-icon="mdi-calendar"
+                @click:append-inner="showDatePicker"
+                @click="showDatePicker"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -177,3 +178,9 @@ defineExpose({ openDialog });
     </v-card>
   </v-dialog>
 </template>
+
+<style>
+.date-input ::-webkit-calendar-picker-indicator {
+  display: none;
+}
+</style>
