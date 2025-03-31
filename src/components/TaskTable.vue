@@ -51,10 +51,6 @@ function addTask(newTask) {
 function updateTask(updatedTask) {
   const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
   if (index !== -1) {
-    if (isTitleDuplicate(updatedTask.title, updatedTask.id)) {
-      toastr.error('A task with this title already exists!');
-      return false;
-    }
     tasks.value[index] = updatedTask;
     toastr.success('Task updated successfully!');
     return true;
