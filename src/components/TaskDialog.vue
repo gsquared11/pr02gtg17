@@ -114,6 +114,7 @@ defineExpose({ openDialog });
                 variant="outlined"
                 :error-messages="titleError"
                 :error="attemptedSubmit && (!task.title || (checkTitleDuplicate && checkTitleDuplicate(task.title, task.id)))"
+                @input="validateTitle"
                 class="mb-4"
               ></v-text-field>
             </v-col>
@@ -124,6 +125,7 @@ defineExpose({ openDialog });
                 variant="outlined"
                 :error-messages="descriptionError"
                 :error="attemptedSubmit && !task.description"
+                @input="validateDescription"
                 class="mb-4"
               ></v-text-field>
             </v-col>
@@ -136,6 +138,7 @@ defineExpose({ openDialog });
                 variant="outlined"
                 :error-messages="deadlineError"
                 :error="attemptedSubmit && !task.deadline"
+                @input="validateDeadline"
                 class="mb-4 date-input"
               ></v-text-field>
             </v-col>
