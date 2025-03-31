@@ -17,10 +17,6 @@ const descriptionError = ref('');
 const deadlineError = ref('');
 let checkTitleDuplicate = null;
 
-function showDatePicker() {
-  deadlineRef.value.$el.querySelector('input[type="date"]').showPicker();
-}
-
 function validateTitle() {
   if (!task.value.title) {
     titleError.value = 'Title is Required!';
@@ -143,7 +139,7 @@ defineExpose({ openDialog });
               <div class="mb-2">Priority</div>
               <v-radio-group v-model="task.priority" class="priority-group" hide-details="auto" inline>
                 <v-radio label="Low" value="Low"></v-radio>
-                <v-radio label="Med" value="Medium"></v-radio>
+                <v-radio label="Med" value="Med"></v-radio>
                 <v-radio label="High" value="High"></v-radio>
               </v-radio-group>
             </v-col>
