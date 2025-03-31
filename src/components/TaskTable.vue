@@ -2,11 +2,12 @@
 import { ref } from 'vue';
 import TaskDialog from './TaskDialog.vue';
 import { useDisplay } from 'vuetify';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
 
 const dialog = ref(null);
 const { mobile } = useDisplay();
 
-const emit = defineEmits(['show-message']);
 defineExpose({ showDialog });
 
 function formatDate(dateString) {
@@ -33,7 +34,7 @@ function showDialog(task = null) {
 
 function addTask(newTask) {
   if (isTitleDuplicate(newTask.title)) {
-    emit('show-message', 'A task with this title already exists!');
+    toastr.error('A task with this title already exists!');
     return false;
   }
   
@@ -43,7 +44,7 @@ function addTask(newTask) {
     isComplete: false,
   };
   tasks.value.push(task);
-  emit('show-message', 'Task added successfully!');
+  toastr.success('Task added successfully!');
   return true;
 }
 
@@ -51,11 +52,11 @@ function updateTask(updatedTask) {
   const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
   if (index !== -1) {
     if (isTitleDuplicate(updatedTask.title, updatedTask.id)) {
-      emit('show-message', 'A task with this title already exists!');
+      toastr.error('A task with this title already exists!');
       return false;
     }
     tasks.value[index] = updatedTask;
-    emit('show-message', 'Task updated successfully!');
+    toastr.success('Task updated successfully!');
     return true;
   }
   return false;
@@ -65,7 +66,7 @@ function deleteTask(taskId) {
   const index = tasks.value.findIndex((t) => t.id === taskId);
   if (index !== -1) {
     tasks.value.splice(index, 1);
-    emit('show-message', 'Task deleted successfully!');
+    toastr.success('Task deleted successfully!');
   }
 }
 </script>
