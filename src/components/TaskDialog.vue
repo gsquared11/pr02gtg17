@@ -11,11 +11,48 @@ const task = ref({
   isComplete: false,
 });
 
+const titleError = ref('');
+const descriptionError = ref('');
+const deadlineError = ref('');
+let checkTitleDuplicate = null;
+
 const rules = {
   required: (value) => !!value || 'Field is required',
 };
 
-function openDialog(existingTask = null) {
+function validateTitle() {
+  if (!task.value.title) {
+    titleError.value = 'Title is Required!';
+    return false;
+  }
+  if (checkTitleDuplicate && checkTitleDuplicate(task.value.title, task.value.id)) {
+    titleError.value = 'A task with this title already exists!';
+    return false;
+  }
+  titleError.value = '';
+  return true;
+}
+
+function validateDescription() {
+  if (!task.value.description) {
+    descriptionError.value = 'Description is Required!';
+    return false;
+  }
+  descriptionError.value = '';
+  return true;
+}
+
+function validateDeadline() {
+  if (!task.value.deadline) {
+    deadlineError.value = 'Deadline is Required!';
+    return false;
+  }
+  deadlineError.value = '';
+  return true;
+}
+
+function openDialog(existingTask = null, titleDuplicateCheck = null) {
+  checkTitleDuplicate = titleDuplicateCheck;
   if (existingTask) {
     task.value = { ...existingTask };
   } else {
@@ -27,15 +64,23 @@ function openDialog(existingTask = null) {
       isComplete: false,
     };
   }
+  titleError.value = '';
+  descriptionError.value = '';
+  deadlineError.value = '';
   dialog.value = true;
 }
 
 function handleSubmit() {
+  if (!validateTitle() || !validateDescription() || !validateDeadline()) {
+    return;
+  }
+  
   if (task.value.id) {
     emit('update-task', { ...task.value });
   } else {
     emit('add-task', { ...task.value });
   }
+  
   dialog.value = false;
 }
 
@@ -47,7 +92,7 @@ defineExpose({ openDialog });
     <v-card>
       <v-card-title class="text-white bg-primary py-4">
         <v-icon icon="mdi-pencil" v-if="task.id" class="me-2"></v-icon>
-        <v-icon icon="mdi-plus-circle" v-else class="me-2"></v-icon>
+        <v-icon icon="mdi-plus" v-else class="me-2"></v-icon>
         <template v-if="task.id">Edit Task</template>
         <template v-else>Add Task</template>
       </v-card-title>
@@ -61,8 +106,9 @@ defineExpose({ openDialog });
                 label="Title"
                 variant="outlined"
                 :rules="[rules.required]"
-                error-messages="Title is Required!"
-                :error="!task.title"
+                :error-messages="titleError"
+                @input="validateTitle"
+                @blur="validateTitle"
                 hide-details="auto"
                 class="mb-4"
               ></v-text-field>
@@ -73,8 +119,9 @@ defineExpose({ openDialog });
                 label="Description"
                 variant="outlined"
                 :rules="[rules.required]"
-                error-messages="Description is Required!"
-                :error="!task.description"
+                :error-messages="descriptionError"
+                @input="validateDescription"
+                @blur="validateDescription"
                 hide-details="auto"
                 class="mb-4"
               ></v-text-field>
@@ -86,6 +133,9 @@ defineExpose({ openDialog });
                 type="date"
                 variant="outlined"
                 :rules="[rules.required]"
+                :error-messages="deadlineError"
+                @input="validateDeadline"
+                @blur="validateDeadline"
                 hide-details="auto"
                 class="mb-4"
                 prepend-inner-icon="mdi-calendar"
@@ -93,7 +143,7 @@ defineExpose({ openDialog });
             </v-col>
             <v-col cols="12">
               <div class="mb-2">Priority</div>
-              <v-radio-group v-model="task.priority" inline class="ml-0">
+              <v-radio-group v-model="task.priority" class="priority-group" hide-details="auto" inline>
                 <v-radio label="Low" value="Low"></v-radio>
                 <v-radio label="Med" value="Medium"></v-radio>
                 <v-radio label="High" value="High"></v-radio>
@@ -108,9 +158,9 @@ defineExpose({ openDialog });
         <v-btn
           variant="elevated"
           color="primary"
-          :prepend-icon="task.id ? 'mdi-pencil' : 'mdi-plus-circle'"
+          :prepend-icon="task.id ? 'mdi-pencil' : 'mdi-plus'"
           @click="handleSubmit"
-          :disabled="!task.title || !task.description || !task.deadline"
+          :disabled="!task.title || !task.description || !task.deadline || (!task.id && checkTitleDuplicate && checkTitleDuplicate(task.title))"
           class="me-2"
         >
           {{ task.id ? 'EDIT' : 'ADD' }}

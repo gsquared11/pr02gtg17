@@ -18,30 +18,25 @@ function formatDate(dateString) {
   });
 }
 
-const tasks = ref([
-  {
-    id: 1,
-    title: 'Learn Vue',
-    description: 'Master Vue.js framework',
-    deadline: '2024-03-01',
-    priority: 'High',
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: 'Learn React',
-    description: 'Study React fundamentals',
-    deadline: '2024-03-15',
-    priority: 'Medium',
-    isComplete: false,
-  },
-]);
+const tasks = ref([]);
+
+function isTitleDuplicate(title, excludeTaskId = null) {
+  return tasks.value.some(task => 
+    task.title.toLowerCase() === title.toLowerCase() && 
+    task.id !== excludeTaskId
+  );
+}
 
 function showDialog(task = null) {
-  dialog.value.openDialog(task);
+  dialog.value.openDialog(task, isTitleDuplicate);
 }
 
 function addTask(newTask) {
+  if (isTitleDuplicate(newTask.title)) {
+    emit('show-message', 'A task with this title already exists!');
+    return false;
+  }
+  
   const task = {
     ...newTask,
     id: Math.max(0, ...tasks.value.map((t) => t.id)) + 1,
@@ -49,14 +44,21 @@ function addTask(newTask) {
   };
   tasks.value.push(task);
   emit('show-message', 'Task added successfully!');
+  return true;
 }
 
 function updateTask(updatedTask) {
   const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
   if (index !== -1) {
+    if (isTitleDuplicate(updatedTask.title, updatedTask.id)) {
+      emit('show-message', 'A task with this title already exists!');
+      return false;
+    }
     tasks.value[index] = updatedTask;
     emit('show-message', 'Task updated successfully!');
+    return true;
   }
+  return false;
 }
 
 function deleteTask(taskId) {
@@ -77,12 +79,12 @@ function deleteTask(taskId) {
     <v-table>
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Deadline</th>
-          <th>Priority</th>
-          <th>Is Complete</th>
-          <th>Action</th>
+          <th class="text-grey font-weight-bold">Title</th>
+          <th class="text-grey font-weight-bold">Description</th>
+          <th class="text-grey font-weight-bold">Deadline</th>
+          <th class="text-grey font-weight-bold">Priority</th>
+          <th class="text-grey font-weight-bold">Is Complete</th>
+          <th class="text-grey font-weight-bold">Action</th>
         </tr>
       </thead>
       <tbody>
