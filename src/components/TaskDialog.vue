@@ -136,10 +136,9 @@ defineExpose({ openDialog });
                 @input="validateDeadline"
                 @blur="validateDeadline"
                 hide-details="auto"
-                class="mb-4 date-input"
+                class="mb-4"
                 append-inner-icon="mdi-calendar"
                 @click:append-inner="showDatePicker"
-                @click="showDatePicker"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -178,9 +177,3 @@ defineExpose({ openDialog });
     </v-card>
   </v-dialog>
 </template>
-
-<style>
-.date-input ::-webkit-calendar-picker-indicator {
-  display: none;
-}
-</style>
