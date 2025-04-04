@@ -45,6 +45,6 @@ defineExpose({ showMessage });
 
 <style>
 .light-btn {
-  background-color: rgb(54, 125, 238);
+  background-color: rgb(54, 125, 238) !important;
 }
 </style>

@@ -91,12 +91,11 @@ function deleteTask(taskId) {
           <td>
             <div class="d-flex flex-column gap-4">
               <v-btn
-                v-if="!task.isComplete"
                 color="primary"
+                v-if="!task.isComplete"
                 size="small"
                 @click="showDialog(task)"
                 prepend-icon="mdi-square-edit-outline"
-                class="light-btn"
               >
                 Update
               </v-btn>
@@ -118,9 +117,3 @@ function deleteTask(taskId) {
     <TaskDialog ref="dialog" @add-task="addTask" @update-task="updateTask" />
   </div>
 </template>
-
-<style>
-.light-btn {
-  background-color: rgb(54, 125, 238) !important;
-}
-</style>
