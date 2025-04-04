@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import TaskDialog from './TaskDialog.vue';
 import { useDisplay } from 'vuetify';
 import toastr from 'toastr';
+import moment from 'moment';
 import 'toastr/build/toastr.min.css';
 
 const dialog = ref(null);
@@ -12,12 +13,7 @@ const tasks = ref([]);
 defineExpose({ showDialog });
 
 function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: '2-digit'
-  });
+  return moment(dateString).format('MM/DD/YY');
 }
 
 function isTitleDuplicate(title, excludeTaskId = null) {
@@ -100,6 +96,7 @@ function deleteTask(taskId) {
                 size="small"
                 @click="showDialog(task)"
                 prepend-icon="mdi-square-edit-outline"
+                class="light-btn"
               >
                 Update
               </v-btn>
@@ -121,3 +118,9 @@ function deleteTask(taskId) {
     <TaskDialog ref="dialog" @add-task="addTask" @update-task="updateTask" />
   </div>
 </template>
+
+<style>
+.light-btn {
+  background-color: rgb(54, 125, 238) !important;
+}
+</style>

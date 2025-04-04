@@ -8,7 +8,7 @@ const task = ref({
   title: '',
   description: '',
   deadline: '',
-  priority: 'Low',
+  priority: 'low',
   isComplete: false,
 });
 
@@ -58,7 +58,7 @@ function openDialog(existingTask = null, titleDuplicateCheck = null) {
       title: '',
       description: '',
       deadline: '',
-      priority: 'Low',
+      priority: 'low',
       isComplete: false,
     };
   }
@@ -145,9 +145,9 @@ defineExpose({ openDialog });
             <v-col cols="12">
               <div class="mb-2">Priority</div>
               <v-radio-group v-model="task.priority" class="priority-group" inline>
-                <v-radio label="Low" value="Low"></v-radio>
-                <v-radio label="Med" value="Med"></v-radio>
-                <v-radio label="High" value="High"></v-radio>
+                <v-radio label="Low" value="low"></v-radio>
+                <v-radio label="Med" value="med"></v-radio>
+                <v-radio label="High" value="high"></v-radio>
               </v-radio-group>
             </v-col>
           </v-row>
@@ -179,7 +179,6 @@ defineExpose({ openDialog });
 </template>
 
 <style>
-/*Moves date picker icon to the right*/
 .date-input ::-webkit-calendar-picker-indicator {
   position: absolute;
   right: 10px;

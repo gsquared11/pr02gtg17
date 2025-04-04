@@ -30,7 +30,7 @@ defineExpose({ showMessage });
         <v-icon icon="mdi-menu" class="me-2"></v-icon>
         FRAMEWORKS
       </v-app-bar-title>
-      <v-btn prepend-icon="mdi-plus-circle" elevation="2" @click="openDialog">
+      <v-btn prepend-icon="mdi-plus-circle" elevation="2" @click="openDialog" class="light-btn">
         ADD
       </v-btn>
     </v-app-bar>
@@ -42,3 +42,9 @@ defineExpose({ showMessage });
     </v-main>
   </v-app>
 </template>
+
+<style>
+.light-btn {
+  background-color: rgb(54, 125, 238);
+}
+</style>
